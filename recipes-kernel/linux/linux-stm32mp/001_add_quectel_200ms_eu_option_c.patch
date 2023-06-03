@@ -1,0 +1,20 @@
+diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+index a5e8374..7cca20b 100644
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -257,6 +257,7 @@ static void option_instat_callback(struct urb *urb);
+ #define QUECTEL_PRODUCT_EM12			0x0512
+ #define QUECTEL_PRODUCT_RM500Q			0x0800
+ #define QUECTEL_PRODUCT_EC200S_CN		0x6002
++#define QUECTEL_PRODUCT_EC200S_EU             0x6005
+ #define QUECTEL_PRODUCT_EC200T			0x6026
+ #define QUECTEL_PRODUCT_RM500K			0x7001
+ 
+@@ -1160,6 +1161,7 @@ static const struct usb_device_id option_ids[] = {
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
+ 	  .driver_info = ZLP },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200S_CN, 0xff, 0, 0) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200S_EU, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500K, 0xff, 0x00, 0x00) },
+ 
