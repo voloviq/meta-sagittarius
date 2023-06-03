@@ -18,7 +18,6 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	netplan \
 	networkmanager \
 	iproute2 \
-	sd-card-system-upgrade \
 	ppp \
 	usb-modeswitch \
 	ppp-dialin \
