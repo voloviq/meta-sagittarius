@@ -19,7 +19,7 @@
 
 / {
 	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-5.15-yocto-kirkstone-mp1-v22.11.23";
-	compatible = "st,mp135f-sagittarius-mx", "st,stm32mp135";
+	compatible = "st,stm32mp135f-sagittarius-mx", "st,stm32mp135";
 
 	memory@c0000000 {
 		device_type = "memory";
@@ -979,13 +979,6 @@
 	/* USER CODE END mdma */
 };
 
-&pka{
-	status = "okay";
-
-	/* USER CODE BEGIN pka */
-	/* USER CODE END pka */
-};
-
 &qspi{
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&quadspi_pins_mx>;
@@ -1015,13 +1008,6 @@
 
 	/* USER CODE BEGIN rtc */
 	/* USER CODE END rtc */
-};
-
-&saes{
-	status = "okay";
-
-	/* USER CODE BEGIN saes */
-	/* USER CODE END saes */
 };
 
 &sdmmc1{
