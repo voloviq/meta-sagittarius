@@ -33,7 +33,6 @@
 	};
 
 	/* USER CODE BEGIN root */
-
 	aliases{
 		serial0 = &uart4;
 	};
@@ -166,7 +165,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN bsec */
-
 	board_id:board_id@f0{
 		reg = <0xf0 0x4>;
 		st,non-secure-otp;
@@ -295,13 +293,6 @@
 	/* USER CODE END iwdg2 */
 };
 
-&pka{
-	status = "okay";
-
-	/* USER CODE BEGIN pka */
-	/* USER CODE END pka */
-};
-
 &pwr_regulators{
 	status = "okay";
 
@@ -319,16 +310,15 @@
 
 	st,clksrc = <
 		CLK_MPU_PLL1P
-		CLK_AXI_HSI
+		CLK_AXI_PLL2P
 		CLK_MLAHBS_PLL3
 		CLK_CKPER_DISABLED
-		CLK_SDMMC1_HCLK6
-		CLK_SDMMC2_HCLK6
+		CLK_SDMMC1_PLL4P
+		CLK_SDMMC2_PLL4P
 		CLK_STGEN_HSI
 		CLK_I2C4_PCLK6
 		CLK_UART4_PCLK1
 		CLK_RNG1_CSI
-		CLK_SAES_AXI
 	>;
 	st,clkdiv = <
 		DIV(DIV_MPU, 1)
@@ -337,8 +327,8 @@
 		DIV(DIV_APB1, 1)
 		DIV(DIV_APB2, 1)
 		DIV(DIV_APB3, 1)
-		DIV(DIV_APB4, 0)
-		DIV(DIV_APB5, 0)
+		DIV(DIV_APB4, 1)
+		DIV(DIV_APB5, 2)
 		DIV(DIV_APB6, 1)
 	>;
 	st,pll_vco {
@@ -346,10 +336,19 @@
 			src = < CLK_PLL12_HSE >;
 			divmn = < 1 74 >;
 		};
+		pll2_vco_1066Mhz: pll2-vco-1066Mhz {
+			src = < CLK_PLL12_HSE >;
+			divmn = < 2 65 >;
+			frac = < 0x1400 >;
+		};
 		pll3_vco_400Mhz: pll3-vco-400Mhz {
 			src = < CLK_PLL3_HSE >;
 			divmn = < 1 32 >;
 			frac = < 0xaab >;
+		};
+		pll4_vco_800Mhz: pll4-vco-800Mhz {
+			src = < CLK_PLL4_HSE >;
+			divmn = < 2 99 >;
 		};
 
 		/* USER CODE BEGIN rcc_st-pll_vco */
@@ -370,6 +369,20 @@
 		/* USER CODE END pll1 */
 	};
 
+	pll2:st,pll@1 {
+		compatible = "st,stm32mp1-pll";
+		reg = <1>;
+
+		st,pll = < &pll2_cfg1 >;
+
+		pll2_cfg1: pll2_cfg1 {
+			st,pll_vco = < &pll2_vco_1066Mhz >;
+			st,pll_div_pqr = < 1 1 0 >;
+		};
+		/* USER CODE BEGIN pll2 */
+		/* USER CODE END pll2 */
+	};
+
 	pll3:st,pll@2 {
 		compatible = "st,stm32mp1-pll";
 		reg = <2>;
@@ -384,6 +397,20 @@
 		/* USER CODE END pll3 */
 	};
 
+	pll4:st,pll@3 {
+		compatible = "st,stm32mp1-pll";
+		reg = <3>;
+
+		st,pll = < &pll4_cfg1 >;
+
+		pll4_cfg1: pll4_cfg1 {
+			st,pll_vco = < &pll4_vco_800Mhz >;
+			st,pll_div_pqr = < 15 9 0 >;
+		};
+		/* USER CODE BEGIN pll4 */
+		/* USER CODE END pll4 */
+	};
+
 };
 
 &rng{
@@ -391,13 +418,6 @@
 
 	/* USER CODE BEGIN rng */
 	/* USER CODE END rng */
-};
-
-&saes{
-	status = "okay";
-
-	/* USER CODE BEGIN saes */
-	/* USER CODE END saes */
 };
 
 &sdmmc1{
@@ -440,7 +460,6 @@
 };
 
 /* USER CODE BEGIN addons */
-
 &cpu0{
 	cpu-supply = <&vddcpu>;
 };

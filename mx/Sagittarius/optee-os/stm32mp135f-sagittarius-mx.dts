@@ -100,10 +100,8 @@
 	DECPROT(STM32MP1_ETZPC_I2C3_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_I2C4_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_LTDC_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
-	DECPROT(STM32MP1_ETZPC_PKA_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_QSPI_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_RNG_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
-	DECPROT(STM32MP1_ETZPC_SAES_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_SDMMC1_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_SDMMC2_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
 	DECPROT(STM32MP1_ETZPC_SPI4_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
@@ -131,6 +129,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN iwdg2 */
+	timeout-sec = <32>;
 	/* USER CODE END iwdg2 */
 };
 
@@ -151,7 +150,7 @@
 
 	st,clksrc = <
 		CLK_MPU_PLL1P
-		CLK_AXI_HSI
+		CLK_AXI_PLL2P
 		CLK_MLAHBS_PLL3
 		CLK_RTC_LSE
 		CLK_MCO1_DISABLED
@@ -160,8 +159,8 @@
 		CLK_CKPER_DISABLED
 		CLK_ETH1_PLL4P
 		CLK_ETH2_PLL4P
-		CLK_SDMMC1_HCLK6
-		CLK_SDMMC2_HCLK6
+		CLK_SDMMC1_PLL4P
+		CLK_SDMMC2_PLL4P
 		CLK_STGEN_HSI
 		CLK_SPI1_PLL4P
 		CLK_SPI23_PLL4P
@@ -177,7 +176,6 @@
 		CLK_UART78_PCLK1
 		CLK_FDCAN_HSE
 		CLK_RNG1_CSI
-		CLK_SAES_AXI
 	>;
 	st,clkdiv = <
 		DIV(DIV_MPU, 1)
@@ -186,8 +184,8 @@
 		DIV(DIV_APB1, 1)
 		DIV(DIV_APB2, 1)
 		DIV(DIV_APB3, 1)
-		DIV(DIV_APB4, 0)
-		DIV(DIV_APB5, 0)
+		DIV(DIV_APB4, 1)
+		DIV(DIV_APB5, 2)
 		DIV(DIV_APB6, 1)
 		DIV(DIV_RTC, 0)
 		DIV(DIV_MCO1, 0)
@@ -197,6 +195,11 @@
 		pll1_vco_1800Mhz: pll1-vco-1800Mhz {
 			src = < CLK_PLL12_HSE >;
 			divmn = < 1 74 >;
+		};
+		pll2_vco_1066Mhz: pll2-vco-1066Mhz {
+			src = < CLK_PLL12_HSE >;
+			divmn = < 2 65 >;
+			frac = < 0x1400 >;
 		};
 		pll3_vco_400Mhz: pll3-vco-400Mhz {
 			src = < CLK_PLL3_HSE >;
@@ -224,6 +227,20 @@
 		};
 		/* USER CODE BEGIN pll1 */
 		/* USER CODE END pll1 */
+	};
+
+	pll2:st,pll@1 {
+		compatible = "st,stm32mp1-pll";
+		reg = <1>;
+
+		st,pll = < &pll2_cfg1 >;
+
+		pll2_cfg1: pll2_cfg1 {
+			st,pll_vco = < &pll2_vco_1066Mhz >;
+			st,pll_div_pqr = < 1 1 0 >;
+		};
+		/* USER CODE BEGIN pll2 */
+		/* USER CODE END pll2 */
 	};
 
 	pll3:st,pll@2 {
@@ -271,9 +288,10 @@
 		st,ck_axi {
 
 			cfg_1 {
-				hz = < 64000000 >;
-				st,clksrc = < CLK_AXI_HSI >;
+				hz = < 266500000 >;
+				st,clksrc = < CLK_AXI_PLL2P >;
 				st,clkdiv = < DIV(DIV_AXI, 0) >;
+				st,pll = < &pll2_cfg1 >;
 			};
 			/* USER CODE BEGIN rcc_st-ck_axi */
 			/* USER CODE END rcc_st-ck_axi */

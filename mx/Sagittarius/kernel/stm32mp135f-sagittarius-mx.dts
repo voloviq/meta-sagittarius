@@ -79,7 +79,6 @@
 		startup-delay-us = <70000>;
 		enable-active-high;
 	};
-	
 	/* USER CODE END root */
 
 	clocks {
@@ -739,10 +738,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN bsec */
-	board_id: board_id@f0 {
-		reg = <0xf0 0x4>;
-		st,non-secure-otp;
-	};
 	/* USER CODE END bsec */
 };
 
@@ -831,12 +826,12 @@
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&i2c4_pins_mx>;
 	pinctrl-1 = <&i2c4_sleep_pins_mx>;
-	i2c-scl-rising-time-ns = <185>;
-	i2c-scl-falling-time-ns = <20>;
-	clock-frequency = <400000>;
 	status = "okay";
 
 	/* USER CODE BEGIN i2c4 */
+	i2c-scl-rising-time-ns = <185>;
+	i2c-scl-falling-time-ns = <20>;
+	clock-frequency = <400000>;
 	pmic: stpmic@33 {
 		compatible = "st,stpmic1";
 		reg = <0x33>;
