@@ -302,6 +302,13 @@
 	/* USER CODE END iwdg2 */
 };
 
+&pka{
+	status = "okay";
+
+	/* USER CODE BEGIN pka */
+	/* USER CODE END pka */
+};
+
 &pwr_regulators{
 	status = "okay";
 
@@ -321,14 +328,15 @@
 		CLK_MPU_PLL1P
 		CLK_AXI_PLL2P
 		CLK_MLAHBS_PLL3
-		CLK_CKPER_CSI
+		CLK_CKPER_DISABLED
 		CLK_SDMMC1_PLL4P
 		CLK_SDMMC2_PLL4P
-		CLK_STGEN_HSE
+		CLK_STGEN_HSI
 		CLK_I2C4_PCLK6
-		CLK_UART4_PLL4Q
+		CLK_USBO_USBPHY
+		CLK_UART4_PCLK1
 		CLK_RNG1_PLL4R
-		CLK_SAES_PLL4R
+		CLK_SAES_AXI
 	>;
 	st,clkdiv = <
 		DIV(DIV_MPU, 1)
@@ -342,24 +350,23 @@
 		DIV(DIV_APB6, 1)
 	>;
 	st,pll_vco {
-		pll1_vco_1300Mhz: pll1-vco-1300Mhz {
+		pll1_vco_1800Mhz: pll1-vco-1800Mhz {
 			src = < CLK_PLL12_HSE >;
-			divmn = < 2 80 >;
-			frac = < 0x800 >;
+			divmn = < 1 74 >;
 		};
 		pll2_vco_1066Mhz: pll2-vco-1066Mhz {
 			src = < CLK_PLL12_HSE >;
 			divmn = < 2 65 >;
 			frac = < 0x1400 >;
 		};
-		pll3_vco_417Mhz: pll3-vco-417Mhz {
+		pll3_vco_400Mhz: pll3-vco-400Mhz {
 			src = < CLK_PLL3_HSE >;
-			divmn = < 1 33 >;
-			frac = < 0x1a04 >;
+			divmn = < 1 32 >;
+			frac = < 0xaab >;
 		};
-		pll4_vco_600Mhz: pll4-vco-600Mhz {
+		pll4_vco_480Mhz: pll4-vco-480Mhz {
 			src = < CLK_PLL4_HSE >;
-			divmn = < 1 49 >;
+			divmn = < 1 39 >;
 		};
 
 		/* USER CODE BEGIN rcc_st-pll_vco */
@@ -373,7 +380,7 @@
 		st,pll = < &pll1_cfg1 >;
 
 		pll1_cfg1: pll1_cfg1 {
-			st,pll_vco = < &pll1_vco_1300Mhz >;
+			st,pll_vco = < &pll1_vco_1800Mhz >;
 			st,pll_div_pqr = < 0 1 1 >;
 		};
 		/* USER CODE BEGIN pll1 */
@@ -401,8 +408,8 @@
 		st,pll = < &pll3_cfg1 >;
 
 		pll3_cfg1: pll3_cfg1 {
-			st,pll_vco = < &pll3_vco_417Mhz >;
-			st,pll_div_pqr = < 1 16 36 >;
+			st,pll_vco = < &pll3_vco_400Mhz >;
+			st,pll_div_pqr = < 1 4 1 >;
 		};
 		/* USER CODE BEGIN pll3 */
 		/* USER CODE END pll3 */
@@ -415,8 +422,8 @@
 		st,pll = < &pll4_cfg1 >;
 
 		pll4_cfg1: pll4_cfg1 {
-			st,pll_vco = < &pll4_vco_600Mhz >;
-			st,pll_div_pqr = < 11 59 11 >;
+			st,pll_vco = < &pll4_vco_480Mhz >;
+			st,pll_div_pqr = < 3 5 24 >;
 		};
 		/* USER CODE BEGIN pll4 */
 		/* USER CODE END pll4 */
@@ -429,13 +436,6 @@
 
 	/* USER CODE BEGIN rng */
 	/* USER CODE END rng */
-};
-
-&pka{
-	status = "okay";
-
-	/* USER CODE BEGIN pka */
-	/* USER CODE END pka */
 };
 
 &saes{
