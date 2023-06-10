@@ -15,6 +15,9 @@
 #include "stm32mp13xf.dtsi"
 
 /* USER CODE BEGIN includes */
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
 /* USER CODE END includes */
 
 / {
@@ -35,6 +38,15 @@
 		ranges;
 
 		/* USER CODE BEGIN reserved-memory */
+		optee_framebuffer@dd000000 {
+			reg = <0xdd000000 0x1000000>;
+			no-map;
+		};
+
+		optee@de000000 {
+			reg = <0xde000000 0x2000000>;
+			no-map;
+		};
 		/* USER CODE END reserved-memory */
 	};
 
@@ -43,6 +55,7 @@
 		serial0 = &uart4;
 		serial1 = &usart1;
 	};
+	
 	chosen {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -55,6 +68,7 @@
 			status = "disabled";
 		};
 	};
+	
 	vin: vin {
 		compatible = "regulator-fixed";
 		regulator-name = "vin";
@@ -79,22 +93,53 @@
 		startup-delay-us = <70000>;
 		enable-active-high;
 	};
+
+	panel_backlight: panel-backlight {
+		compatible = "gpio-backlight";
+		gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>;
+		default-on;
+		default-brightness-level = <0>;
+		status = "okay";
+	};
+
+	panel_rgb: panel-rgb {
+		compatible = "rocktech,rk043fn48h", "panel-dpi";
+		enable-gpios = <&gpioa 13 GPIO_ACTIVE_HIGH>;
+		backlight = <&panel_backlight>;
+		power-supply = <&v3v3_ao>;
+		data-mapping = "bgr666";
+		status = "okay";
+
+		width-mm = <105>;
+		height-mm = <67>;
+
+		port {
+			panel_in_rgb: endpoint {
+				remote-endpoint = <&ltdc_out_rgb>;
+			};
+		};
+
+		panel-timing {
+			clock-frequency = <10000000>;
+			hactive = <480>;
+			vactive = <272>;
+			hsync-len = <52>;
+			hfront-porch = <10>;
+			hback-porch = <10>;
+			vsync-len = <10>;
+			vfront-porch = <10>;
+			vback-porch = <10>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			de-active = <1>;
+			pixelclk-active = <1>;
+		};
+	};
 	/* USER CODE END root */
 
 	clocks {
 
 		/* USER CODE BEGIN clocks */
-		clk_ext_camera: clk-ext-camera {
-			#clock-cells = <0>;
-			compatible = "fixed-clock";
-			clock-frequency = <24000000>;
-		};
-
-		clk_mco1: clk-mco1 {
-			#clock-cells = <0>;
-			compatible = "fixed-clock";
-			clock-frequency = <24000000>;
-		};
 		/* USER CODE END clocks */
 	};
 
@@ -296,23 +341,6 @@
 		pins {
 			pinmux = <STM32_PINMUX('H', 12, ANALOG)>, /* I2C3_SCL */
 					 <STM32_PINMUX('H', 14, ANALOG)>; /* I2C3_SDA */
-		};
-	};
-
-	i2c4_pins_mx: i2c4_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('B', 7, AF6)>, /* I2C4_SDA */
-					 <STM32_PINMUX('E', 15, AF6)>; /* I2C4_SCL */
-			bias-disable;
-			drive-open-drain;
-			slew-rate = <0>;
-		};
-	};
-
-	i2c4_sleep_pins_mx: i2c4_sleep_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('B', 7, ANALOG)>, /* I2C4_SDA */
-					 <STM32_PINMUX('E', 15, ANALOG)>; /* I2C4_SCL */
 		};
 	};
 
@@ -738,10 +766,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN bsec */
-	board_id: board_id@f0 {
-		reg = <0xf0 0x4>;
-		st,non-secure-otp;
-	};
 	/* USER CODE END bsec */
 };
 
@@ -749,6 +773,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN dma1 */
+	sram = <&dma_pool>;
 	/* USER CODE END dma1 */
 };
 
@@ -756,6 +781,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN dma2 */
+	sram = <&dma_pool>;
 	/* USER CODE END dma2 */
 };
 
@@ -826,110 +852,6 @@
 	/* USER CODE END i2c3 */
 };
 
-&i2c4{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&i2c4_pins_mx>;
-	pinctrl-1 = <&i2c4_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN i2c4 */
-	pmic: stpmic@33 {
-		compatible = "st,stpmic1";
-		reg = <0x33>;
-
-		status = "okay";
-
-		regulators {
-			compatible = "st,stpmic1-regulators";
-			buck1-supply = <&vin>;
-			buck2-supply = <&vin>;
-			buck3-supply = <&vin>;
-			buck4-supply = <&vin>;
-			ldo1-supply = <&vin>;
-			ldo4-supply = <&vin>;
-			ldo5-supply = <&vin>;
-			ldo6-supply = <&vin>;
-			vref_ddr-supply = <&vin>;
-			pwr_sw1-supply = <&bst_out>;
-			pwr_sw2-supply = <&v3v3_ao>;
-
-			vddcpu: buck1 {
-				regulator-name = "vddcpu";
-				regulator-min-microvolt = <1250000>;
-				regulator-max-microvolt = <1250000>;
-				regulator-always-on;
-				regulator-over-current-protection;
-			};
-
-			vdd_ddr: buck2 {
-				regulator-name = "vdd_ddr";
-				regulator-min-microvolt = <1350000>;
-				regulator-max-microvolt = <1350000>;
-				regulator-always-on;
-				regulator-over-current-protection;
-			};
-
-			vdd: buck3 {
-				regulator-name = "vdd";
-				regulator-min-microvolt = <3300000>;
-				regulator-max-microvolt = <3300000>;
-				regulator-always-on;
-				st,mask-reset;
-				regulator-over-current-protection;
-			};
-
-			vddcore: buck4 {
-				regulator-name = "vddcore";
-				regulator-min-microvolt = <1250000>;
-				regulator-max-microvolt = <1250000>;
-				regulator-always-on;
-				regulator-over-current-protection;
-			};
-
-			vdd_adc: ldo1 {
-				regulator-name = "vdd_adc";
-				regulator-min-microvolt = <3300000>;
-				regulator-max-microvolt = <3300000>;
-			};
-
-			vdd_usb: ldo4 {
-				regulator-name = "vdd_usb";
-				regulator-min-microvolt = <3300000>;
-				regulator-max-microvolt = <3300000>;
-			};
-
-			vdd_sd: ldo5 {
-				regulator-name = "vdd_sd";
-				regulator-min-microvolt = <3300000>;
-				regulator-max-microvolt = <3300000>;
-				regulator-boot-on;
-			};
-
-			v1v8_periph: ldo6 {
-				regulator-name = "v1v8_periph";
-				regulator-min-microvolt = <1800000>;
-				regulator-max-microvolt = <1800000>;
-			};
-
-			vref_ddr: vref_ddr {
-				regulator-name = "vref_ddr";
-				regulator-always-on;
-			};
-
-			bst_out: boost {
-				regulator-name = "bst_out";
-			};
-
-			v3v3_sw: pwr_sw2 {
-				regulator-name = "v3v3_sw";
-				regulator-active-discharge = <1>;
-				regulator-always-on;
-			};
-		};
-	};
-	/* USER CODE END i2c4 */
-};
-
 &iwdg2{
 	status = "okay";
 
@@ -945,6 +867,15 @@
 	status = "okay";
 
 	/* USER CODE BEGIN ltdc */
+	port {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ltdc_out_rgb: endpoint@0 {
+			reg = <0>;
+			remote-endpoint = <&panel_in_rgb>;
+		};
+	};
 	/* USER CODE END ltdc */
 };
 
@@ -975,13 +906,6 @@
 	/* USER CODE END mdma */
 };
 
-&pka{
-	status = "okay";
-
-	/* USER CODE BEGIN pka */
-	/* USER CODE END pka */
-};
-
 &qspi{
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&quadspi_pins_mx>;
@@ -999,25 +923,11 @@
 	/* USER CODE END rcc */
 };
 
-&rng{
-	status = "okay";
-
-	/* USER CODE BEGIN rng */
-	/* USER CODE END rng */
-};
-
 &rtc{
 	status = "okay";
 
 	/* USER CODE BEGIN rtc */
 	/* USER CODE END rtc */
-};
-
-&saes{
-	status = "okay";
-
-	/* USER CODE BEGIN saes */
-	/* USER CODE END saes */
 };
 
 &sdmmc1{
@@ -1031,7 +941,7 @@
 	disable-wp;
 	st,neg-edge;
 	bus-width = <4>;
-	vmmc-supply = <&vdd_sd>;
+	vmmc-supply = <&vmmc>;
 	/* USER CODE END sdmmc1 */
 };
 
@@ -1145,8 +1055,92 @@
 };
 
 /* USER CODE BEGIN addons */
-&cpu0 {
-	cpu-supply = <&vddcpu>;
+&scmi_regu {
+	scmi_vddcpu: voltd-vddcpu {
+		voltd-name = "vddcpu";
+		regulator-name = "vddcpu";
+	};
+	scmi_vdd: voltd-vdd {
+		voltd-name = "vdd";
+		regulator-name = "vdd";
+	};
+	scmi_vddcore: voltd-vddcore {
+		voltd-name = "vddcore";
+		regulator-name = "vddcore";
+	};
+	scmi_vdd_adc: voltd-vdd_adc {
+		voltd-name = "vdd_adc";
+		regulator-name = "vdd_adc";
+	};
+	scmi_vdd_usb: voltd-vdd_usb {
+		voltd-name = "vdd_usb";
+		regulator-name = "vdd_usb";
+	};
+	scmi_vdd_sd: voltd-vdd_sd {
+		voltd-name = "vdd_sd";
+		regulator-name = "vdd_sd";
+	};
+	scmi_v1v8_periph: voltd-v1v8_periph {
+		voltd-name = "v1v8_periph";
+		regulator-name = "v1v8_periph";
+	};
+	scmi_v3v3_sw: voltd-v3v3_sw {
+		voltd-name = "v3v3_sw";
+		regulator-name = "v3v3_sw";
+	};
+};
+
+&sram {
+	dma_pool: dma-sram@0 {
+		reg = <0x0 0x4000>;
+		pool;
+	};
+};
+
+&usbh_ehci {
+	phys = <&usbphyc_port0>;
+	status = "okay";
+};
+
+&usbphyc {
+	status = "okay";
+};
+
+&usbphyc_port0 {
+	phy-supply = <&scmi_vdd_usb>;
+	st,current-boost-microamp = <1000>;
+	st,decrease-hs-slew-rate;
+	st,tune-hs-dc-level = <2>;
+	st,enable-hs-rftime-reduction;
+	st,trim-hs-current = <11>;
+	st,trim-hs-impedance = <2>;
+	st,tune-squelch-level = <1>;
+	st,enable-hs-rx-gain-eq;
+	st,no-hs-ftime-ctrl;
+	st,no-lsfs-sc;
+
+	/*
+	 * Hack to keep hub active if wakeup source is enabled
+	 * otherwise the hub will wakeup the port0 as soon as the v3v3_sw is disabled
+	 */
+	connector {
+		compatible = "usb-a-connector";
+		vbus-supply = <&scmi_v3v3_sw>;
+	};
+};
+
+&usbphyc_port1 {
+	phy-supply = <&scmi_vdd_usb>;
+	st,current-boost-microamp = <1000>;
+	st,decrease-hs-slew-rate;
+	st,tune-hs-dc-level = <2>;
+	st,enable-hs-rftime-reduction;
+	st,trim-hs-current = <11>;
+	st,trim-hs-impedance = <2>;
+	st,tune-squelch-level = <1>;
+	st,enable-hs-rx-gain-eq;
+	st,no-hs-ftime-ctrl;
+	st,no-lsfs-sc;
 };
 /* USER CODE END addons */
 
