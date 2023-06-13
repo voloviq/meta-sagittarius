@@ -89,7 +89,6 @@
 		};
 		clk_lse: clk-lse {
 			clock-frequency = <32768>;
-			st,drive = < LSEDRV_MEDIUM_HIGH >;
 
 			/* USER CODE BEGIN clk_lse */
 			/* USER CODE END clk_lse */
@@ -119,47 +118,6 @@
 			bias-disable;
 			drive-open-drain;
 			slew-rate = <0>;
-		};
-	};
-
-	ltdc_pins_mx: ltdc_mx-0 {
-		pins1 {
-			pinmux = <STM32_PINMUX('A', 15, AF9)>, /* LTDC_R0 */
-					 <STM32_PINMUX('B', 6, AF7)>, /* LTDC_B6 */
-					 <STM32_PINMUX('B', 12, AF13)>, /* LTDC_R3 */
-					 <STM32_PINMUX('D', 1, AF14)>, /* LTDC_G2 */
-					 <STM32_PINMUX('D', 4, AF11)>, /* LTDC_R1 */
-					 <STM32_PINMUX('D', 5, AF14)>, /* LTDC_G4 */
-					 <STM32_PINMUX('D', 9, AF14)>, /* LTDC_B0 */
-					 <STM32_PINMUX('D', 10, AF11)>, /* LTDC_B7 */
-					 <STM32_PINMUX('D', 14, AF14)>, /* LTDC_R4 */
-					 <STM32_PINMUX('D', 15, AF14)>, /* LTDC_B5 */
-					 <STM32_PINMUX('E', 1, AF9)>, /* LTDC_HSYNC */
-					 <STM32_PINMUX('E', 4, AF14)>, /* LTDC_G7 */
-					 <STM32_PINMUX('E', 6, AF14)>, /* LTDC_G3 */
-					 <STM32_PINMUX('E', 7, AF14)>, /* LTDC_R5 */
-					 <STM32_PINMUX('E', 9, AF14)>, /* LTDC_R7 */
-					 <STM32_PINMUX('E', 13, AF11)>, /* LTDC_B1 */
-					 <STM32_PINMUX('F', 2, AF14)>, /* LTDC_B3 */
-					 <STM32_PINMUX('F', 5, AF9)>, /* LTDC_G0 */
-					 <STM32_PINMUX('G', 0, AF14)>, /* LTDC_G5 */
-					 <STM32_PINMUX('G', 4, AF11)>, /* LTDC_VSYNC */
-					 <STM32_PINMUX('G', 15, AF11)>, /* LTDC_B4 */
-					 <STM32_PINMUX('H', 2, AF7)>, /* LTDC_G1 */
-					 <STM32_PINMUX('H', 7, AF14)>, /* LTDC_B2 */
-					 <STM32_PINMUX('H', 8, AF11)>, /* LTDC_R6 */
-					 <STM32_PINMUX('H', 9, AF11)>, /* LTDC_DE */
-					 <STM32_PINMUX('H', 10, AF14)>, /* LTDC_R2 */
-					 <STM32_PINMUX('H', 11, AF14)>; /* LTDC_G6 */
-			bias-disable;
-			drive-push-pull;
-			slew-rate = <0>;
-		};
-		pins2 {
-			pinmux = <STM32_PINMUX('B', 13, AF13)>; /* LTDC_CLK */
-			bias-disable;
-			drive-push-pull;
-			slew-rate = <1>;
 		};
 	};
 
@@ -450,24 +408,6 @@
 	/* USER CODE END i2c4 */
 };
 
-&iwdg2{
-	status = "okay";
-
-	/* USER CODE BEGIN iwdg2 */
-	timeout-sec = <32>;
-	secure-timeout-sec = <5>;
-	/* USER CODE END iwdg2 */
-};
-
-&ltdc{
-	pinctrl-names = "default";
-	pinctrl-0 = <&ltdc_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN ltdc */
-	/* USER CODE END ltdc */
-};
-
 &pka{
 	status = "okay";
 
@@ -498,35 +438,39 @@
 	clock-names = "clk-hse", "clk-hsi", "clk-lse", "clk-lsi", "clk-csi";
 
 	/* USER CODE BEGIN rcc */
-	compatible = "st,stm32mp13-rcc", "syscon", "st,stm32mp13-rcc-mco";
 	/* USER CODE END rcc */
 
 	st,clksrc = <
 		CLK_MPU_PLL1P
 		CLK_AXI_PLL2P
 		CLK_MLAHBS_PLL3
-		CLK_RTC_LSE
-		CLK_MCO1_HSE
+		CLK_RTC_LSI
+		CLK_MCO1_DISABLED
 		CLK_MCO2_DISABLED
-		CLK_CKPER_CSI
-		CLK_ETH1_PLL4P
-		CLK_ETH2_PLL4P
-		CLK_SDMMC1_PLL4P
+		CLK_QSPI_PLL4P
+		CLK_CKPER_DISABLED
+		CLK_ETH1_PLL3Q
+		CLK_ETH2_PLL3Q
+		CLK_SDMMC1_PLL3R
 		CLK_SDMMC2_PLL4P
-		CLK_STGEN_HSE
+		CLK_STGEN_HSI
 		CLK_USBPHY_HSE
+		CLK_SPI1_PLL4P
+		CLK_SPI23_PLL4P
+		CLK_SPI4_PCLK6
 		CLK_I2C4_PCLK6
-		CLK_USBO_USBPHY
+		CLK_USBO_PLL4R
 		CLK_ADC1_PLL3Q
-		CLK_ADC2_CKPER
 		CLK_I2C12_PCLK1
-		CLK_I2C5_PLL4R
-		CLK_UART2_PLL3Q
-		CLK_UART4_PLL4Q
-		CLK_RNG1_PLL4R
-		CLK_SAES_PLL4R
-		CLK_DCMIPP_PLL2Q
-		CLK_LPTIM3_PCLK3
+		CLK_I2C3_PCLK6
+		CLK_UART1_PCLK6
+		CLK_UART4_PCLK1
+		CLK_UART35_PCLK1
+		CLK_UART6_PCLK2
+		CLK_UART78_PCLK1
+		CLK_FDCAN_PLL3Q
+		CLK_RNG1_CSI
+		CLK_SAES_AXI
 	>;
 	st,clkdiv = <
 		DIV(DIV_MPU, 1)
@@ -543,24 +487,22 @@
 		DIV(DIV_MCO2, 0)
 	>;
 	st,pll_vco {
-		pll1_vco_1300Mhz: pll1-vco-1300Mhz {
+		pll1_vco_1800Mhz: pll1-vco-1800Mhz {
 			src = < CLK_PLL12_HSE >;
-			divmn = < 2 80 >;
-			frac = < 0x800 >;
+			divmn = < 1 74 >;
 		};
 		pll2_vco_1066Mhz: pll2-vco-1066Mhz {
 			src = < CLK_PLL12_HSE >;
 			divmn = < 2 65 >;
 			frac = < 0x1400 >;
 		};
-		pll3_vco_417Mhz: pll3-vco-417Mhz {
+		pll3_vco_400Mhz: pll3-vco-400Mhz {
 			src = < CLK_PLL3_HSE >;
-			divmn = < 1 33 >;
-			frac = < 0x1a04 >;
+			divmn = < 2 49 >;
 		};
-		pll4_vco_600Mhz: pll4-vco-600Mhz {
+		pll4_vco_560Mhz: pll4-vco-560Mhz {
 			src = < CLK_PLL4_HSE >;
-			divmn = < 1 49 >;
+			divmn = < 2 69 >;
 		};
 
 		/* USER CODE BEGIN rcc_st-pll_vco */
@@ -580,7 +522,7 @@
 		st,pll = < &pll1_cfg1 >;
 
 		pll1_cfg1: pll1_cfg1 {
-			st,pll_vco = < &pll1_vco_1300Mhz >;
+			st,pll_vco = < &pll1_vco_1800Mhz >;
 			st,pll_div_pqr = < 0 1 1 >;
 		};
 		/* USER CODE BEGIN pll1 */
@@ -608,8 +550,8 @@
 		st,pll = < &pll3_cfg1 >;
 
 		pll3_cfg1: pll3_cfg1 {
-			st,pll_vco = < &pll3_vco_417Mhz >;
-			st,pll_div_pqr = < 1 16 36 >;
+			st,pll_vco = < &pll3_vco_400Mhz >;
+			st,pll_div_pqr = < 1 7 1 >;
 		};
 		/* USER CODE BEGIN pll3 */
 		/* USER CODE END pll3 */
@@ -622,8 +564,8 @@
 		st,pll = < &pll4_cfg1 >;
 
 		pll4_cfg1: pll4_cfg1 {
-			st,pll_vco = < &pll4_vco_600Mhz >;
-			st,pll_div_pqr = < 11 59 11 >;
+			st,pll_vco = < &pll4_vco_560Mhz >;
+			st,pll_div_pqr = < 3 6 0 >;
 		};
 		/* USER CODE BEGIN pll4 */
 		/* USER CODE END pll4 */
@@ -634,7 +576,7 @@
 		st,ck_mpu {
 
 			cfg_1 {
-				hz = < 650000000 >;
+				hz = < 900000000 >;
 				st,clksrc = < CLK_MPU_PLL1P >;
 				st,pll = < &pll1_cfg1 >;
 			};
@@ -659,7 +601,7 @@
 		st,ck_mlahbs {
 
 			cfg_1 {
-				hz = < 208877929 >;
+				hz = < 200000000 >;
 				st,clksrc = < CLK_MLAHBS_PLL3 >;
 				st,clkdiv = < DIV(DIV_MLAHB, 0) >;
 				st,pll = < &pll3_cfg1 >;
@@ -691,13 +633,6 @@
 
 	/* USER CODE BEGIN saes */
 	/* USER CODE END saes */
-};
-
-&tamp{
-	status = "okay";
-
-	/* USER CODE BEGIN tamp */
-	/* USER CODE END tamp */
 };
 
 /* USER CODE BEGIN addons */

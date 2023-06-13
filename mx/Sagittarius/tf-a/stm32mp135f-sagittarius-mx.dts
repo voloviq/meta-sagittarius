@@ -79,7 +79,6 @@
 		};
 		clk_lse: clk-lse {
 			clock-frequency = <32768>;
-			st,drive = < LSEDRV_MEDIUM_HIGH >;
 
 			/* USER CODE BEGIN clk_lse */
 			/* USER CODE END clk_lse */
@@ -294,14 +293,6 @@
 	/* USER CODE END i2c4 */
 };
 
-&iwdg2{
-	status = "okay";
-
-	/* USER CODE BEGIN iwdg2 */
-	timeout-sec = <32>;
-	/* USER CODE END iwdg2 */
-};
-
 &pka{
 	status = "okay";
 
@@ -329,13 +320,13 @@
 		CLK_AXI_PLL2P
 		CLK_MLAHBS_PLL3
 		CLK_CKPER_DISABLED
-		CLK_SDMMC1_PLL4P
+		CLK_SDMMC1_PLL3R
 		CLK_SDMMC2_PLL4P
 		CLK_STGEN_HSI
 		CLK_I2C4_PCLK6
-		CLK_USBO_USBPHY
+		CLK_USBO_PLL4R
 		CLK_UART4_PCLK1
-		CLK_RNG1_PLL4R
+		CLK_RNG1_CSI
 		CLK_SAES_AXI
 	>;
 	st,clkdiv = <
@@ -361,12 +352,11 @@
 		};
 		pll3_vco_400Mhz: pll3-vco-400Mhz {
 			src = < CLK_PLL3_HSE >;
-			divmn = < 1 32 >;
-			frac = < 0xaab >;
+			divmn = < 2 49 >;
 		};
-		pll4_vco_480Mhz: pll4-vco-480Mhz {
+		pll4_vco_560Mhz: pll4-vco-560Mhz {
 			src = < CLK_PLL4_HSE >;
-			divmn = < 1 39 >;
+			divmn = < 2 69 >;
 		};
 
 		/* USER CODE BEGIN rcc_st-pll_vco */
@@ -409,7 +399,7 @@
 
 		pll3_cfg1: pll3_cfg1 {
 			st,pll_vco = < &pll3_vco_400Mhz >;
-			st,pll_div_pqr = < 1 4 1 >;
+			st,pll_div_pqr = < 1 7 1 >;
 		};
 		/* USER CODE BEGIN pll3 */
 		/* USER CODE END pll3 */
@@ -422,8 +412,8 @@
 		st,pll = < &pll4_cfg1 >;
 
 		pll4_cfg1: pll4_cfg1 {
-			st,pll_vco = < &pll4_vco_480Mhz >;
-			st,pll_div_pqr = < 3 5 24 >;
+			st,pll_vco = < &pll4_vco_560Mhz >;
+			st,pll_div_pqr = < 3 6 0 >;
 		};
 		/* USER CODE BEGIN pll4 */
 		/* USER CODE END pll4 */

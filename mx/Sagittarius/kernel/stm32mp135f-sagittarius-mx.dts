@@ -845,14 +845,6 @@
 	/* USER CODE END i2c3 */
 };
 
-&iwdg2{
-	status = "okay";
-
-	/* USER CODE BEGIN iwdg2 */
-	timeout-sec = <32>;
-	/* USER CODE END iwdg2 */
-};
-
 &ltdc{
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&ltdc_pins_mx>;

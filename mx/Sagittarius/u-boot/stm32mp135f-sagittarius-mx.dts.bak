@@ -135,17 +135,6 @@
 			pixelclk-active = <1>;
 		};
 	};
-
-	usb_phy_tuning:usb-phy-tuning{
-		st,hs-dc-level = <2>;
-		st,fs-rftime-tuning;
-		st,hs-rftime-reduction;
-		st,hs-current-trim = <15>;
-		st,hs-impedance-trim = <1>;
-		st,squelch-level = <3>;
-		st,hs-rx-offset = <2>;
-		st,no-lsfs-sc;
-	};
 	/* USER CODE END root */
 
 	clocks {
@@ -856,14 +845,6 @@
 	/* USER CODE END i2c3 */
 };
 
-&iwdg2{
-	status = "okay";
-
-	/* USER CODE BEGIN iwdg2 */
-	timeout-sec = <32>;
-	/* USER CODE END iwdg2 */
-};
-
 &ltdc{
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&ltdc_pins_mx>;
@@ -925,13 +906,6 @@
 
 	/* USER CODE BEGIN rcc */
 	/* USER CODE END rcc */
-};
-
-&rtc{
-	status = "okay";
-
-	/* USER CODE BEGIN rtc */
-	/* USER CODE END rtc */
 };
 
 &sdmmc1{
@@ -1062,8 +1036,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbh_ehci */
-	phys = <&usbphyc_port0>;
-	phy-names = "usb";
 	/* USER CODE END usbh_ehci */
 };
 
@@ -1071,8 +1043,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbh_ohci */
-	phys = <&usbphyc_port0>;
-	phy-names = "usb";
 	/* USER CODE END usbh_ohci */
 };
 
@@ -1080,10 +1050,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbotg_hs */
-	phys = <&usbphyc_port1 0>;
-	phy-names = "usb2-phy";
- 	u-boot,force-b-session-valid;
- 	dr_mode = "peripheral";
 	/* USER CODE END usbotg_hs */
 };
 
@@ -1098,8 +1064,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbphyc_port0 */
-	phy-supply = <&scmi_vdd_usb>;
-	st,phy-tuning = <&usb_phy_tuning>;
 	/* USER CODE END usbphyc_port0 */
 };
 
@@ -1107,47 +1071,10 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbphyc_port1 */
-	phy-supply = <&scmi_vdd_usb>;
-	st,phy-tuning = <&usb_phy_tuning>;
 	/* USER CODE END usbphyc_port1 */
 };
 
 /* USER CODE BEGIN addons */
-&scmi_regu {
-	scmi_vddcpu: voltd-vddcpu {
-		voltd-name = "vddcpu";
-		regulator-name = "vddcpu";
-	};
-	scmi_vdd: voltd-vdd {
-		voltd-name = "vdd";
-		regulator-name = "vdd";
-	};
-	scmi_vddcore: voltd-vddcore {
-		voltd-name = "vddcore";
-		regulator-name = "vddcore";
-	};
-	scmi_vdd_adc: voltd-vdd_adc {
-		voltd-name = "vdd_adc";
-		regulator-name = "vdd_adc";
-	};
-	scmi_vdd_usb: voltd-vdd_usb {
-		voltd-name = "vdd_usb";
-		regulator-name = "vdd_usb";
-	};
-	scmi_vdd_sd: voltd-vdd_sd {
-		voltd-name = "vdd_sd";
-		regulator-name = "vdd_sd";
-	};
-	scmi_v1v8_periph: voltd-v1v8_periph {
-		voltd-name = "v1v8_periph";
-		regulator-name = "v1v8_periph";
-	};
-	scmi_v3v3_sw: voltd-v3v3_sw {
-		voltd-name = "v3v3_sw";
-		regulator-name = "v3v3_sw";
-	};
-};
-
 &sram {
 	dma_pool: dma-sram@0 {
 		reg = <0x0 0x4000>;
