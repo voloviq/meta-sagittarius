@@ -53,7 +53,12 @@
 	/* USER CODE BEGIN root */
 	aliases {
 		serial0 = &uart4;
-		serial1 = &usart1;
+		serial1 = &uart5;
+		serial2 = &uart7;
+		serial3 = &usart1;
+		serial4 = &usart6;
+		ethernet0 = &eth1;
+		ethernet1 = &eth2;
 	};
 	
 	chosen {
@@ -66,6 +71,42 @@
 			compatible = "simple-framebuffer";
 			clocks = <&rcc LTDC_PX>;
 			status = "disabled";
+		};
+	};
+
+	led{
+		compatible = "gpio-leds";
+
+		led_blue{
+			label = "LED_BLUE";
+			gpios = <&gpioh 4 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "heartbeat";
+			status = "okay";
+			default-state = "off";
+		};
+
+		led_red{
+			label = "LED_RED";
+			gpios = <&gpioi 7 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "cpu0";
+			status = "okay";
+			default-state = "off";
+		};
+
+		led_yellow{
+			label = "LED_YELLOW";
+			gpios = <&gpioh 5 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "mmc0";
+			status = "okay";
+			default-state = "off";
+		};
+
+		led_green{
+			label = "LED_GREEN";
+			gpios = <&gpiof 14 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "mmc1";
+			status = "okay";
+			default-state = "off";
 		};
 	};
 	
@@ -107,11 +148,11 @@
 		enable-gpios = <&gpioa 13 GPIO_ACTIVE_HIGH>;
 		backlight = <&panel_backlight>;
 		power-supply = <&v3v3_ao>;
-		data-mapping = "bgr666";
+		data-mapping = "bgr888";
 		status = "okay";
 
-		width-mm = <105>;
-		height-mm = <67>;
+		width-mm = <56>;
+		height-mm = <97>;
 
 		port {
 			panel_in_rgb: endpoint {
@@ -120,15 +161,15 @@
 		};
 
 		panel-timing {
-			clock-frequency = <10000000>;
-			hactive = <480>;
-			vactive = <272>;
-			hsync-len = <52>;
-			hfront-porch = <10>;
-			hback-porch = <10>;
-			vsync-len = <10>;
-			vfront-porch = <10>;
-			vback-porch = <10>;
+			clock-frequency = <33260000>;
+			hactive = <800>;
+			vactive = <480>;
+			hback-porch = <0>;
+			hfront-porch = <256>;
+			vback-porch = <0>;
+			vfront-porch = <45>;
+			hsync-len = <1>;
+			vsync-len = <1>;
 			hsync-active = <0>;
 			vsync-active = <0>;
 			de-active = <1>;
@@ -802,6 +843,28 @@
 	status = "okay";
 
 	/* USER CODE BEGIN eth1 */
+	phy-mode = "rmii";
+	max-speed = <100>;
+	phy-handle = <&phy0_eth1>;
+	st,eth-ref-clk-sel;
+	phy-supply = <&scmi_v3v3_sw>;
+	nvmem-cells = <&ethernet_mac1_address>;
+	nvmem-cell-names = "mac-address";
+
+	mdio0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "snps,dwmac-mdio";
+		phy0_eth1: ethernet-phy@0 {
+			reg = <1>;
+			compatible = "ethernet-phy-id0022.1510";
+			reset-gpios = <&gpioi 3 GPIO_ACTIVE_LOW>;
+			interrupt-parent = <&gpioh>;
+			interrupts = <6 IRQ_TYPE_EDGE_FALLING>; /* ETH_MDINT# */
+			reset-delay-us = <10000>;
+			post-reset-delay-us = <1000>;
+		};
+	};
 	/* USER CODE END eth1 */
 };
 
@@ -812,6 +875,28 @@
 	status = "okay";
 
 	/* USER CODE BEGIN eth2 */
+	phy-mode = "rmii";
+	max-speed = <100>;
+	phy-handle = <&phy0_eth2>;
+	st,eth-ref-clk-sel;
+	phy-supply = <&scmi_v3v3_sw>;
+	nvmem-cells = <&ethernet_mac2_address>;
+	nvmem-cell-names = "mac-address";
+
+	mdio0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "snps,dwmac-mdio";
+		phy0_eth2: ethernet-phy@0 {
+			reg = <1>;
+			compatible = "ethernet-phy-id0022.1510";
+			reset-gpios = <&gpioi 2 GPIO_ACTIVE_LOW>;
+			interrupt-parent = <&gpiog>;
+			interrupts = <12 IRQ_TYPE_EDGE_FALLING>; /* ETH_MDINT# */
+			reset-delay-us = <10000>;
+			post-reset-delay-us = <1000>;
+		};
+	};
 	/* USER CODE END eth2 */
 };
 
@@ -1082,6 +1167,41 @@
 };
 
 /* USER CODE BEGIN addons */
+&scmi_regu {
+	scmi_vddcpu: voltd-vddcpu {
+		voltd-name = "vddcpu";
+		regulator-name = "vddcpu";
+	};
+	scmi_vdd: voltd-vdd {
+		voltd-name = "vdd";
+		regulator-name = "vdd";
+	};
+	scmi_vddcore: voltd-vddcore {
+		voltd-name = "vddcore";
+		regulator-name = "vddcore";
+	};
+	scmi_vdd_adc: voltd-vdd_adc {
+		voltd-name = "vdd_adc";
+		regulator-name = "vdd_adc";
+	};
+	scmi_vdd_usb: voltd-vdd_usb {
+		voltd-name = "vdd_usb";
+		regulator-name = "vdd_usb";
+	};
+	scmi_vdd_sd: voltd-vdd_sd {
+		voltd-name = "vdd_sd";
+		regulator-name = "vdd_sd";
+	};
+	scmi_v1v8_periph: voltd-v1v8_periph {
+		voltd-name = "v1v8_periph";
+		regulator-name = "v1v8_periph";
+	};
+	scmi_v3v3_sw: voltd-v3v3_sw {
+		voltd-name = "v3v3_sw";
+		regulator-name = "v3v3_sw";
+	};
+};
+
 &sram {
 	dma_pool: dma-sram@0 {
 		reg = <0x0 0x4000>;
