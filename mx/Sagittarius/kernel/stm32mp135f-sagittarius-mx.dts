@@ -856,7 +856,6 @@
 		#size-cells = <0>;
 		compatible = "snps,dwmac-mdio";
 		phy0_eth1: ethernet-phy@0 {
-			reg = <1>;
 			compatible = "ethernet-phy-id0022.1510";
 			reset-gpios = <&gpioi 3 GPIO_ACTIVE_LOW>;
 			interrupt-parent = <&gpioh>;
@@ -888,7 +887,6 @@
 		#size-cells = <0>;
 		compatible = "snps,dwmac-mdio";
 		phy0_eth2: ethernet-phy@0 {
-			reg = <1>;
 			compatible = "ethernet-phy-id0022.1510";
 			reset-gpios = <&gpioi 2 GPIO_ACTIVE_LOW>;
 			interrupt-parent = <&gpiog>;
