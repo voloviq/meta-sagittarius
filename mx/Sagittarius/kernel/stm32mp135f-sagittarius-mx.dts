@@ -139,7 +139,6 @@
 		compatible = "gpio-backlight";
 		gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>;
 		default-on;
-		default-brightness-level = <0>;
 		status = "okay";
 	};
 
