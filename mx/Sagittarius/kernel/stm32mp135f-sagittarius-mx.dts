@@ -135,6 +135,17 @@
 		enable-active-high;
 	};
 
+	usb_phy_tuning:usb-phy-tuning{
+		st,hs-dc-level = <2>;
+		st,fs-rftime-tuning;
+		st,hs-rftime-reduction;
+		st,hs-current-trim = <15>;
+		st,hs-impedance-trim = <1>;
+		st,squelch-level = <3>;
+		st,hs-rx-offset = <2>;
+		st,no-lsfs-sc;
+	};
+
 	panel_backlight: panel-backlight {
 		compatible = "gpio-backlight";
 		gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>;
@@ -1125,6 +1136,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbh_ehci */
+	phys = <&usbphyc_port0>;
+	phy-names = "usb";
 	/* USER CODE END usbh_ehci */
 };
 
@@ -1132,6 +1145,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbh_ohci */
+	phys = <&usbphyc_port0>;
+	phy-names = "usb";
 	/* USER CODE END usbh_ohci */
 };
 
@@ -1139,6 +1154,10 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbotg_hs */
+	phys = <&usbphyc_port1 0>;
+	phy-names = "usb2-phy";
+ 	u-boot,force-b-session-valid;
+ 	dr_mode = "peripheral";
 	/* USER CODE END usbotg_hs */
 };
 
@@ -1153,6 +1172,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbphyc_port0 */
+	phy-supply = <&scmi_vdd_usb>;
+	st,phy-tuning = <&usb_phy_tuning>;
 	/* USER CODE END usbphyc_port0 */
 };
 
@@ -1160,6 +1181,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbphyc_port1 */
+	phy-supply = <&scmi_vdd_usb>;
+	st,phy-tuning = <&usb_phy_tuning>;
 	/* USER CODE END usbphyc_port1 */
 };
 
