@@ -293,6 +293,13 @@
 	/* USER CODE END i2c4 */
 };
 
+&iwdg2{
+	status = "okay";
+
+	/* USER CODE BEGIN iwdg2 */
+	/* USER CODE END iwdg2 */
+};
+
 &pka{
 	status = "okay";
 

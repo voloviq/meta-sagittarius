@@ -20,6 +20,7 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	iproute2 \
 	ppp \
 	usb-modeswitch \
+	usbip \
 	ppp-dialin \
 	libiio \
 	packagegroup-st-demo \

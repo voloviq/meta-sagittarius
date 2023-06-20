@@ -135,6 +135,22 @@
 		enable-active-high;
 	};
 
+	pwm_regulator {
+		compatible = "pwm-regulator";
+		pwms = <&{/soc/timer@40002000/pwm} 3 500000 0>;
+		regulator-min-microvolt = <1016000>;
+		regulator-max-microvolt = <1114000>;
+		regulator-name = "vdd_logic";
+
+		/* Voltage Duty-Cycle */
+		voltage-table = <1114000 0>,
+				<1095000 10>,
+				<1076000 20>,
+				<1056000 30>,
+				<1036000 40>,
+				<1016000 50>;
+	};
+
 	usb_phy_tuning:usb-phy-tuning{
 		st,hs-dc-level = <2>;
 		st,fs-rftime-tuning;
@@ -695,6 +711,21 @@
 		};
 	};
 
+	tim4_pwm_pins_mx: tim4_pwm_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 8, AF2)>; /* TIM4_CH3 */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	tim4_pwm_sleep_pins_mx: tim4_pwm_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 8, ANALOG)>; /* TIM4_CH3 */
+		};
+	};
+
 	uart4_pins_mx: uart4_mx-0 {
 		pins1 {
 			pinmux = <STM32_PINMUX('D', 6, AF8)>; /* UART4_TX */
@@ -810,6 +841,36 @@
 	status = "okay";
 
 	/* USER CODE BEGIN adc_1 */
+	vdda-supply = <&scmi_vdd_adc>;
+	vref-supply = <&scmi_vdd_adc>;
+	adc1: adc@0 {
+		status = "okay";
+		channel@0 {
+			reg = <0>;
+			/* 16.5 ck_cycles sampling time */
+			st,min-sample-time-ns = <5000>;
+		};
+		channel@2 {
+			reg = <2>;
+			st,min-sample-time-ns = <5000>;
+		};
+		channel@3 {
+			reg = <3>;
+			st,min-sample-time-ns = <5000>;
+		};
+		channel@6 {
+			reg = <6>;
+			st,min-sample-time-ns = <5000>;
+		};
+		channel@13 {
+			reg = <13>;
+			st,min-sample-time-ns = <5000>;
+		};
+		channel@14 {
+			reg = <14>;
+			st,min-sample-time-ns = <5000>;
+		};
+	};
 	/* USER CODE END adc_1 */
 };
 
@@ -938,6 +999,15 @@
 	/* USER CODE END i2c3 */
 };
 
+&iwdg2{
+	status = "okay";
+
+	/* USER CODE BEGIN iwdg2 */
+	timeout-sec = <32>;
+	/* USER CODE END iwdg2 */
+};
+
+
 &ltdc{
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&ltdc_pins_mx>;
@@ -1049,6 +1119,12 @@
 	status = "okay";
 
 	/* USER CODE BEGIN spi1 */
+	spidev@0{
+		cs-gpios = <&gpioe 5 0>;
+        compatible = "rohm,dh2228fv";
+        reg = <0>;
+        spi-max-frequency = <8000000>;
+    };
 	/* USER CODE END spi1 */
 };
 
@@ -1059,6 +1135,12 @@
 	status = "okay";
 
 	/* USER CODE BEGIN spi2 */
+	spidev@0{
+		cs-gpios = <&gpiob 8 0>;
+        compatible = "rohm,dh2228fv";
+        reg = <0>;
+        spi-max-frequency = <8000000>;
+    };
 	/* USER CODE END spi2 */
 };
 
@@ -1069,6 +1151,12 @@
 	status = "okay";
 
 	/* USER CODE BEGIN spi3 */
+	spidev@0{
+		cs-gpios = <&gpiof 15 0>;
+        compatible = "rohm,dh2228fv";
+        reg = <0>;
+        spi-max-frequency = <8000000>;
+    };
 	/* USER CODE END spi3 */
 };
 
@@ -1079,7 +1167,35 @@
 	status = "okay";
 
 	/* USER CODE BEGIN spi4 */
+	spidev@0{
+		cs-gpios = <&gpioa 14 0>;
+        compatible = "rohm,dh2228fv";
+        reg = <0>;
+        spi-max-frequency = <8000000>;
+    };
 	/* USER CODE END spi4 */
+};
+
+&timers4{
+	status = "disabled";
+
+	/* USER CODE BEGIN timers4 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	/* USER CODE END timers4 */
+
+	pwm{
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&tim4_pwm_pins_mx>;
+		pinctrl-1 = <&tim4_pwm_sleep_pins_mx>;
+		status = "okay";
+
+		/* USER CODE BEGIN timers4_pwm */
+		timer@3 {
+			status = "okay";
+		};
+		/* USER CODE END timers4_pwm */
+	};
 };
 
 &uart4{
