@@ -986,6 +986,27 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c2 */
+	goodixat0x14: gt911@14 {
+		compatible = "goodix,gt911";
+		reg = <0x14>;
+		pinctrl-names = "default";
+		interrupt-parent = <&gpioi>;
+		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
+		reset-gpios = <&gpioh 1 GPIO_ACTIVE_LOW>;
+		touchscreen-size-x = <480>;
+		touchscreen-size-y = <800>;
+	};
+
+	goodixat0x5d: gt911@5d {
+		compatible = "goodix,gt911";
+		reg = <0x5d>;
+		pinctrl-names = "default";
+		interrupt-parent = <&gpioi>;
+		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
+		reset-gpios = <&gpioh 1 GPIO_ACTIVE_LOW>;
+		touchscreen-size-x = <480>;
+		touchscreen-size-y = <800>;
+	};
 	/* USER CODE END i2c2 */
 };
 
