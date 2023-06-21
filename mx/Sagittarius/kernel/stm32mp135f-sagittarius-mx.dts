@@ -364,7 +364,7 @@
 		pins {
 			pinmux = <STM32_PINMUX('D', 3, AF5)>, /* I2C1_SDA */
 					 <STM32_PINMUX('D', 12, AF5)>; /* I2C1_SCL */
-			bias-disable;
+			bias-pull-up;
 			drive-open-drain;
 			slew-rate = <0>;
 		};
@@ -381,7 +381,7 @@
 		pins {
 			pinmux = <STM32_PINMUX('D', 7, AF4)>, /* I2C2_SCL */
 					 <STM32_PINMUX('G', 3, AF4)>; /* I2C2_SDA */
-			bias-disable;
+			bias-pull-up;
 			drive-open-drain;
 			slew-rate = <0>;
 		};
@@ -398,7 +398,7 @@
 		pins {
 			pinmux = <STM32_PINMUX('H', 12, AF4)>, /* I2C3_SCL */
 					 <STM32_PINMUX('H', 14, AF4)>; /* I2C3_SDA */
-			bias-disable;
+			bias-pull-up;
 			drive-open-drain;
 			slew-rate = <0>;
 		};
