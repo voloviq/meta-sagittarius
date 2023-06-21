@@ -1177,11 +1177,12 @@
 };
 
 &timers4{
-	status = "disabled";
+	status = "okay";
 
 	/* USER CODE BEGIN timers4 */
 	/delete-property/dmas;
 	/delete-property/dma-names;
+	compatible = "st,stm32-timers";
 	/* USER CODE END timers4 */
 
 	pwm{
@@ -1189,13 +1190,14 @@
 		pinctrl-0 = <&tim4_pwm_pins_mx>;
 		pinctrl-1 = <&tim4_pwm_sleep_pins_mx>;
 		status = "okay";
-
+		compatible = "st,stm32-pwm";
+	};
 		/* USER CODE BEGIN timers4_pwm */
 		timer@3 {
+			compatible = "st,stm32h7-timer-trigger";
 			status = "okay";
 		};
 		/* USER CODE END timers4_pwm */
-	};
 };
 
 &uart4{
