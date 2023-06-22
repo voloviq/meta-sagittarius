@@ -986,23 +986,15 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c2 */
-	goodixat0x14: gt911@14 {
-		compatible = "goodix,gt911";
+	goodixat0x14: gt1151@14 {
+		compatible = "goodix,gt1151";
 		reg = <0x14>;
 		pinctrl-names = "default";
+		AVDD28-supply = <&v3v3_ao>;
+		VDDIO-supply  = <&v3v3_ao>;
 		interrupt-parent = <&gpioi>;
 		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
-		reset-gpios = <&gpioh 1 GPIO_ACTIVE_LOW>;
-		touchscreen-size-x = <800>;
-		touchscreen-size-y = <480>;
-	};
-
-	goodixat0x5d: gt911@5d {
-		compatible = "goodix,gt911";
-		reg = <0x5d>;
-		pinctrl-names = "default";
-		interrupt-parent = <&gpioi>;
-		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
+		irq-gpios = <&gpioi 0 0>;
 		reset-gpios = <&gpioh 1 GPIO_ACTIVE_LOW>;
 		touchscreen-size-x = <800>;
 		touchscreen-size-y = <480>;
