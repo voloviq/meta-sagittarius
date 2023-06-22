@@ -993,8 +993,8 @@
 		interrupt-parent = <&gpioi>;
 		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
 		reset-gpios = <&gpioh 1 GPIO_ACTIVE_LOW>;
-		touchscreen-size-x = <480>;
-		touchscreen-size-y = <800>;
+		touchscreen-size-x = <800>;
+		touchscreen-size-y = <480>;
 	};
 
 	goodixat0x5d: gt911@5d {
@@ -1004,8 +1004,8 @@
 		interrupt-parent = <&gpioi>;
 		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
 		reset-gpios = <&gpioh 1 GPIO_ACTIVE_LOW>;
-		touchscreen-size-x = <480>;
-		touchscreen-size-y = <800>;
+		touchscreen-size-x = <800>;
+		touchscreen-size-y = <480>;
 	};
 	/* USER CODE END i2c2 */
 };
