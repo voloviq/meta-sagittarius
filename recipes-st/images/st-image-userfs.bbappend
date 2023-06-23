@@ -3,4 +3,5 @@ PACKAGE_INSTALL = " \
     ppp \
     usb-modeswitch \
     ppp-dialin \
+    linux-examples-stm32mp1-userfs \
     "

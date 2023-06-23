@@ -996,8 +996,12 @@
 		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
 		irq-gpios = <&gpioi 0 0>;
 		reset-gpios = <&gpioh 1 GPIO_ACTIVE_LOW>;
+		touchscreen-max-id = <11>;
 		touchscreen-size-x = <800>;
 		touchscreen-size-y = <480>;
+		touchscreen-max-w = <512>;
+        touchscreen-max-p = <512>;
+		goodix,int-sync = <1>;
 	};
 	/* USER CODE END i2c2 */
 };
@@ -1285,10 +1289,10 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbotg_hs */
+	dr_mode = "peripheral";
+	force-b-session-valid;
 	phys = <&usbphyc_port1 0>;
 	phy-names = "usb2-phy";
- 	u-boot,force-b-session-valid;
- 	dr_mode = "peripheral";
 	/* USER CODE END usbotg_hs */
 };
 

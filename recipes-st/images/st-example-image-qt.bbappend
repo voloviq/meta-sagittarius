@@ -11,9 +11,5 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	ppp-dialin \
 	libiio \
 	packagegroup-st-demo \
-	tslib \
-    	tslib-calibrate \
-    	tslib-conf \
-    	tslib-dev \
-    	tslib-tests \
+	usbotg-gadget-config \
 "
