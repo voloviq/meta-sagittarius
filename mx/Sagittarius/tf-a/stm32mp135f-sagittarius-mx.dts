@@ -79,12 +79,14 @@
 		};
 		clk_lse: clk-lse {
 			clock-frequency = <32768>;
+			st,drive = < LSEDRV_MEDIUM_HIGH >;
 
 			/* USER CODE BEGIN clk_lse */
 			/* USER CODE END clk_lse */
 		};
 		clk_hse: clk-hse {
 			clock-frequency = <24000000>;
+			st,digbypass;
 
 			/* USER CODE BEGIN clk_hse */
 			/* USER CODE END clk_hse */
@@ -226,8 +228,8 @@
 
 			vdd_ddr:buck2{
 				regulator-name = "vdd_ddr";
-				regulator-min-microvolt = <1350000>;
-				regulator-max-microvolt = <1350000>;
+				regulator-min-microvolt = <1500000>;
+				regulator-max-microvolt = <1500000>;
 				regulator-always-on;
 				regulator-over-current-protection;
 			};
@@ -297,6 +299,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN iwdg2 */
+	timeout-sec = <32>;
 	/* USER CODE END iwdg2 */
 };
 

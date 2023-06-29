@@ -30,17 +30,12 @@ cd layers/meta-st
 git clone -b kirkstone git@github.com:voloviq/meta-sagittarius.git
 cd ../../
 DISTRO=openstlinux-weston MACHINE=mp1-sagittarius source layers/meta-st/scripts/envsetup.sh
-bitbake-layers add-layer ../layers/meta-st/meta-st-stm32mp-addons/
 bitbake st-image-weston
 ```
 **Note:**
 To save some space in disk modify two records in local.conf file <br>
 DL_DIR ?= "${HOME}/openstlinux-5.15-yocto-kirkstone-mp1-v22.11.23/downloads" <br>
 SSTATE_DIR ?= "${HOME}/openstlinux-5.15-yocto-kirkstone-mp1-v22.11.23/sstate-cache" <br>
-
-**Note:**
-Adding new layer can only be one time <br>
-bitbake-layers add-layer ../layers/meta-st/meta-st-stm32mp-addons/ <br>
 
 Above record save space when new compilation for new board will be performed. There will be common download and sstate-cache.
 

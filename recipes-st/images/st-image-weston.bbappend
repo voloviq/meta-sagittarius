@@ -1,3 +1,5 @@
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+
 inherit populate_sdk_qt5
 
 IMAGE_INSTALL += " \
@@ -20,8 +22,14 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	iproute2 \
 	ppp \
 	usb-modeswitch \
+	usbotg-gadget-config \
+	packagegroup-st-demo \
 	usbip \
 	ppp-dialin \
 	libiio \
-	packagegroup-st-demo \
+	sox \
+	libnfc \
+	sdcard-raw-tools \
 "
+
+IMAGE_ROOTFS_MAXSIZE = "950000"

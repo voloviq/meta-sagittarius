@@ -80,7 +80,7 @@
 		led_blue{
 			label = "LED_BLUE";
 			gpios = <&gpioh 4 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "heartbeat";
+			linux,default-trigger = "cpu0";
 			status = "okay";
 			default-state = "off";
 		};
@@ -88,7 +88,7 @@
 		led_red{
 			label = "LED_RED";
 			gpios = <&gpioi 7 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "cpu0";
+			linux,default-trigger = "mmc0";
 			status = "okay";
 			default-state = "off";
 		};
@@ -96,7 +96,7 @@
 		led_yellow{
 			label = "LED_YELLOW";
 			gpios = <&gpioh 5 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "mmc0";
+			linux,default-trigger = "mmc1";
 			status = "okay";
 			default-state = "off";
 		};
@@ -104,7 +104,7 @@
 		led_green{
 			label = "LED_GREEN";
 			gpios = <&gpiof 14 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "mmc1";
+			linux,default-trigger = "heartbeat";
 			status = "okay";
 			default-state = "off";
 		};
@@ -135,20 +135,13 @@
 		enable-active-high;
 	};
 
-	pwm_regulator {
-		compatible = "pwm-regulator";
-		pwms = <&{/soc/timer@40002000/pwm} 3 500000 0>;
-		regulator-min-microvolt = <1016000>;
-		regulator-max-microvolt = <1114000>;
-		regulator-name = "vdd_logic";
-
-		/* Voltage Duty-Cycle */
-		voltage-table = <1114000 0>,
-				<1095000 10>,
-				<1076000 20>,
-				<1056000 30>,
-				<1036000 40>,
-				<1016000 50>;
+	pwmleds {
+		compatible = "pwm-leds";
+		led1{
+			label = "led1";
+			pwms = <&voltage_pwm 2 500000 0>;
+			max-brightness = <256>;
+		};
 	};
 
 	usb_phy_tuning:usb-phy-tuning{
@@ -163,14 +156,12 @@
 	};
 
 	panel_backlight: panel-backlight {
-		#compatible = "gpio-backlight";
-		#gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>;
-		#default-on;
-		#status = "okay";
 		compatible = "pwm-backlight";
-		pwms = <&backlight_pwm 3 20000 0>;
+		pwms = <&backlight_pwm 2 500000 0>;
 		brightness-levels = <0 4 8 16 32 64 128 255>;
+		enable-gpios = <&gpioe 5 GPIO_ACTIVE_HIGH>;
 		default-brightness-level = <6>;
+		power-supply = <&v3v3_ao>;
 		status = "okay";
 	};
 
@@ -1033,6 +1024,17 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c3 */
+	pn532: nfc@24 {
+
+		compatible = "nxp,pn532";
+
+		reg = <0x24>;
+		clock-frequency = <400000>;
+
+		interrupt-parent = <&gpioa>;
+		interrupts = <14 IRQ_TYPE_EDGE_FALLING>;
+
+	};
 	/* USER CODE END i2c3 */
 };
 
@@ -1204,12 +1206,12 @@
 	status = "okay";
 
 	/* USER CODE BEGIN spi4 */
-	spidev@0{
+	/*spidev@0{
 		cs-gpios = <&gpioa 14 0>;
         compatible = "rohm,dh2228fv";
         reg = <0>;
         spi-max-frequency = <8000000>;
-    };
+    };*/
 	/* USER CODE END spi4 */
 };
 
@@ -1217,6 +1219,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN timers1 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
 	/* USER CODE END timers1 */
 
 	backlight_pwm:pwm{
@@ -1236,21 +1240,15 @@
 	/* USER CODE BEGIN timers4 */
 	/delete-property/dmas;
 	/delete-property/dma-names;
-	compatible = "st,stm32-timers";
 	/* USER CODE END timers4 */
 
-	pwm{
+	voltage_pwm:pwm{
 		pinctrl-names = "default", "sleep";
 		pinctrl-0 = <&tim4_pwm_pins_mx>;
 		pinctrl-1 = <&tim4_pwm_sleep_pins_mx>;
 		status = "okay";
-		compatible = "st,stm32-pwm";
 	};
 		/* USER CODE BEGIN timers4_pwm */
-		timer@3 {
-			compatible = "st,stm32h7-timer-trigger";
-			status = "okay";
-		};
 		/* USER CODE END timers4_pwm */
 };
 
