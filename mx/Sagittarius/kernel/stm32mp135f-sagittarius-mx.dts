@@ -1325,7 +1325,8 @@
 
 	/* USER CODE BEGIN usbotg_hs */
 	dr_mode = "peripheral";
-	force-b-session-valid;
+ 	force-b-session-valid;
+	force-vbus-detection;
 	phys = <&usbphyc_port1 0>;
 	phy-names = "usb2-phy";
 	/* USER CODE END usbotg_hs */

@@ -1290,6 +1290,7 @@
 	phys = <&usbphyc_port1 0>;
 	phy-names = "usb2-phy";
  	u-boot,force-b-session-valid;
+	u-boot,force-vbus-detection;
  	dr_mode = "peripheral";
 	/* USER CODE END usbotg_hs */
 };
