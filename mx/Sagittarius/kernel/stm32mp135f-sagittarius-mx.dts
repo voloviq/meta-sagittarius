@@ -162,7 +162,6 @@
 		compatible = "pwm-backlight";
 		pwms = <&backlight_pwm 2 500000 0>;
 		brightness-levels = <0 4 8 16 32 64 128 255>;
-		enable-gpios = <&gpioe 5 GPIO_ACTIVE_HIGH>;
 		default-brightness-level = <6>;
 		power-supply = <&v3v3_ao>;
 		status = "okay";
@@ -1327,13 +1326,9 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbotg_hs */
-	dr_mode = "usb-role-switch";
+	dr_mode = "peripheral";
 	usb-role-switch;
-	force-b-session-valid;
-	disable-over-current;
-	srp-disable;
-	hnp-disable;
-	adp-disable;
+	role-switch-default-mode = "peripheral"; 
 	phys = <&usbphyc_port1 0>;
 	phy-names = "usb2-phy";
 	/* USER CODE END usbotg_hs */
