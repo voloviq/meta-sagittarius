@@ -164,9 +164,13 @@
 	};
 
 	panel_backlight: panel-backlight {
-		compatible = "gpio-backlight";
-		gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>;
-		default-on;
+		compatible = "pwm-backlight";
+		u-boot,dm-pre-reloc;
+		pwms = <&backlight_pwm 2 500000 0>;
+		brightness-levels = <0 4 8 16 32 64 128 255>;
+		enable-gpios = <&gpioe 5 GPIO_ACTIVE_HIGH>;
+		default-brightness-level = <6>;
+		power-supply = <&v3v3_ao>;
 		status = "okay";
 	};
 
@@ -712,6 +716,21 @@
 		};
 	};
 
+	tim1_pwm_pins_mx: tim1_pwm_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('A', 10, AF1)>; /* TIM1_CH3 */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	tim1_pwm_sleep_pins_mx: tim1_pwm_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('A', 10, ANALOG)>; /* TIM1_CH3 */
+		};
+	};
+
 	tim4_pwm_pins_mx: tim4_pwm_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('B', 8, AF2)>; /* TIM4_CH3 */
@@ -1190,6 +1209,25 @@
         spi-max-frequency = <8000000>;
     };
 	/* USER CODE END spi4 */
+};
+
+&timers1{
+	status = "okay";
+
+	/* USER CODE BEGIN timers1 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	/* USER CODE END timers1 */
+
+	backlight_pwm:pwm{
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&tim1_pwm_pins_mx>;
+		pinctrl-1 = <&tim1_pwm_sleep_pins_mx>;
+		status = "okay";
+
+		/* USER CODE BEGIN timers1_pwm */
+		/* USER CODE END timers1_pwm */
+	};
 };
 
 &timers4{
