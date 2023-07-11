@@ -1,0 +1,21 @@
+diff --git a/sound/soc/codecs/pcm5102a.c b/sound/soc/codecs/pcm5102a.c
+index b8cfc25..4b437b2 100644
+--- a/sound/soc/codecs/pcm5102a.c
++++ b/sound/soc/codecs/pcm5102a.c
+@@ -24,9 +24,16 @@ static struct snd_soc_dai_driver pcm5102a_dai = {
+ 	},
+ };
+ 
++static const struct snd_soc_dapm_widget aic31xx_dapm_mclk_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++};
++
+ static struct snd_soc_component_driver soc_component_dev_pcm5102a = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
++	.dapm_widgets		= aic31xx_dapm_mclk_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(aic31xx_dapm_mclk_widgets),
+ 	.endianness		= 1,
+ 	.non_legacy_dai_naming	= 1,
+ };

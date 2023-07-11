@@ -30,6 +30,7 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	sox \
 	libnfc \
 	sdcard-raw-tools \
+	mpv \
 "
 
 IMAGE_ROOTFS_MAXSIZE = "950000"

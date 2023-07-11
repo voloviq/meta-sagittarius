@@ -151,6 +151,24 @@
 				<1016000 50>;
 	};
 
+    sound {
+        compatible = "audio-graph-card";
+        label = "STM32MP1-audio-test-card";
+        dais = <&i2s1_port>;
+        status = "okay";
+    };
+
+    codec: pcm5102a-codec {
+        compatible = "ti,pcm5102a";
+		clocks = <&sai1>;     /* The codec is a consumer of SAI2A master clock */
+		clock-names = "MCLKX"; /* Feed MCLKX codec clock with SAI2A master clock provider */
+
+        codec_port: port {
+            codec_endpoint: endpoint {
+                remote-endpoint = <&i2s1_endpoint>;
+            };
+        };
+    };
 
 	usb_phy_tuning:usb-phy-tuning{
 		st,hs-dc-level = <2>;
@@ -222,24 +240,16 @@
 	adc1_pins_mx: adc1_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('A', 1, ANALOG)>, /* ADC1_INP3 */
-					 <STM32_PINMUX('A', 4, ANALOG)>, /* ADC1_INP14 */
-					 <STM32_PINMUX('A', 5, ANALOG)>, /* ADC1_INP2 */
-					 <STM32_PINMUX('C', 0, ANALOG)>, /* ADC1_INP0 */
-					 <STM32_PINMUX('C', 3, ANALOG)>, /* ADC1_INP13 */
-					 <STM32_PINMUX('F', 11, ANALOG)>, /* ADC1_INP8 */
-					 <STM32_PINMUX('F', 12, ANALOG)>; /* ADC1_INP6 */
+					 <STM32_PINMUX('A', 6, ANALOG)>, /* ADC1_INP17 */
+					 <STM32_PINMUX('A', 7, ANALOG)>; /* ADC1_INP16 */
 		};
 	};
 
 	adc1_sleep_pins_mx: adc1_sleep_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('A', 1, ANALOG)>, /* ADC1_INP3 */
-					 <STM32_PINMUX('A', 4, ANALOG)>, /* ADC1_INP14 */
-					 <STM32_PINMUX('A', 5, ANALOG)>, /* ADC1_INP2 */
-					 <STM32_PINMUX('C', 0, ANALOG)>, /* ADC1_INP0 */
-					 <STM32_PINMUX('C', 3, ANALOG)>, /* ADC1_INP13 */
-					 <STM32_PINMUX('F', 11, ANALOG)>, /* ADC1_INP8 */
-					 <STM32_PINMUX('F', 12, ANALOG)>; /* ADC1_INP6 */
+					 <STM32_PINMUX('A', 6, ANALOG)>, /* ADC1_INP17 */
+					 <STM32_PINMUX('A', 7, ANALOG)>; /* ADC1_INP16 */
 		};
 	};
 
@@ -520,6 +530,27 @@
 		};
 	};
 
+	sai1a_pins_mx: sai1a_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('C', 0, AF2)>, /* SAI1_SCK_A */
+					 <STM32_PINMUX('C', 3, AF10)>, /* SAI1_MCLK_A */
+					 <STM32_PINMUX('E', 11, AF6)>, /* SAI1_FS_A */
+					 <STM32_PINMUX('F', 12, AF6)>; /* SAI1_SD_A */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	sai1a_sleep_pins_mx: sai1a_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('C', 0, ANALOG)>, /* SAI1_SCK_A */
+					 <STM32_PINMUX('C', 3, ANALOG)>, /* SAI1_MCLK_A */
+					 <STM32_PINMUX('E', 11, ANALOG)>, /* SAI1_FS_A */
+					 <STM32_PINMUX('F', 12, ANALOG)>; /* SAI1_SD_A */
+		};
+	};
+
 	sdmmc1_pins_mx: sdmmc1_mx-0 {
 		pins1 {
 			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
@@ -640,25 +671,6 @@
 		};
 	};
 
-	spi1_pins_mx: spi1_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('A', 3, AF5)>, /* SPI1_MOSI */
-					 <STM32_PINMUX('A', 6, AF5)>, /* SPI1_MISO */
-					 <STM32_PINMUX('B', 1, AF5)>; /* SPI1_SCK */
-			bias-disable;
-			drive-push-pull;
-			slew-rate = <1>;
-		};
-	};
-
-	spi1_sleep_pins_mx: spi1_sleep_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('A', 3, ANALOG)>, /* SPI1_MOSI */
-					 <STM32_PINMUX('A', 6, ANALOG)>, /* SPI1_MISO */
-					 <STM32_PINMUX('B', 1, ANALOG)>; /* SPI1_SCK */
-		};
-	};
-
 	spi2_pins_mx: spi2_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('A', 8, AF8)>, /* SPI2_MOSI */
@@ -694,25 +706,6 @@
 			pinmux = <STM32_PINMUX('F', 1, ANALOG)>, /* SPI3_MOSI */
 					 <STM32_PINMUX('G', 7, ANALOG)>, /* SPI3_MISO */
 					 <STM32_PINMUX('H', 13, ANALOG)>; /* SPI3_SCK */
-		};
-	};
-
-	spi4_pins_mx: spi4_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('E', 11, AF5)>, /* SPI4_MOSI */
-					 <STM32_PINMUX('E', 12, AF5)>, /* SPI4_SCK */
-					 <STM32_PINMUX('F', 3, AF5)>; /* SPI4_MISO */
-			bias-disable;
-			drive-push-pull;
-			slew-rate = <1>;
-		};
-	};
-
-	spi4_sleep_pins_mx: spi4_sleep_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('E', 11, ANALOG)>, /* SPI4_MOSI */
-					 <STM32_PINMUX('E', 12, ANALOG)>, /* SPI4_SCK */
-					 <STM32_PINMUX('F', 3, ANALOG)>; /* SPI4_MISO */
 		};
 	};
 
@@ -808,25 +801,21 @@
 
 	usart1_pins_mx: usart1_mx-0 {
 		pins1 {
-			pinmux = <STM32_PINMUX('A', 7, AF7)>, /* USART1_CTS */
-					 <STM32_PINMUX('B', 0, AF4)>; /* USART1_RX */
-			bias-disable;
-		};
-		pins2 {
-			pinmux = <STM32_PINMUX('A', 9, AF7)>, /* USART1_TX */
-					 <STM32_PINMUX('C', 2, AF7)>; /* USART1_RTS */
+			pinmux = <STM32_PINMUX('A', 9, AF7)>; /* USART1_TX */
 			bias-disable;
 			drive-push-pull;
 			slew-rate = <0>;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('B', 0, AF4)>; /* USART1_RX */
+			bias-disable;
 		};
 	};
 
 	usart1_sleep_pins_mx: usart1_sleep_mx-0 {
 		pins {
-			pinmux = <STM32_PINMUX('A', 7, ANALOG)>, /* USART1_CTS */
-					 <STM32_PINMUX('A', 9, ANALOG)>, /* USART1_TX */
-					 <STM32_PINMUX('B', 0, ANALOG)>, /* USART1_RX */
-					 <STM32_PINMUX('C', 2, ANALOG)>; /* USART1_RTS */
+			pinmux = <STM32_PINMUX('A', 9, ANALOG)>, /* USART1_TX */
+					 <STM32_PINMUX('B', 0, ANALOG)>; /* USART1_RX */
 		};
 	};
 
@@ -880,32 +869,34 @@
 			reg = <0>;
 			/* 16.5 ck_cycles sampling time */
 			st,min-sample-time-ns = <5000>;
-			assigned-resolution-bits = <12>;
-		};
-		channel@1 {
-			reg = <2>;
-			st,min-sample-time-ns = <5000>;
-			assigned-resolution-bits = <12>;
 		};
 		channel@2 {
-			reg = <3>;
+			reg = <2>;
 			st,min-sample-time-ns = <5000>;
-			assigned-resolution-bits = <12>;
 		};
 		channel@3 {
-			reg = <6>;
+			reg = <3>;
 			st,min-sample-time-ns = <5000>;
-			assigned-resolution-bits = <12>;
-		};
-		channel@5 {
-			reg = <13>;
-			st,min-sample-time-ns = <5000>;
-			assigned-resolution-bits = <12>;
 		};
 		channel@6 {
+			reg = <6>;
+			st,min-sample-time-ns = <5000>;
+		};
+		channel@8 {
+			reg = <8>;
+			st,min-sample-time-ns = <5000>;
+		};
+		channel@14 {
 			reg = <14>;
 			st,min-sample-time-ns = <5000>;
-			assigned-resolution-bits = <12>;
+		};
+		channel@16 {
+			reg = <16>;
+			st,min-sample-time-ns = <5000>;
+		};
+		channel@17 {
+			reg = <17>;
+			st,min-sample-time-ns = <5000>;
 		};
 	};
 	/* USER CODE END adc_1 */
@@ -1023,6 +1014,23 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c2 */
+	goodixat0x14: gt1151@14 {
+		compatible = "goodix,gt1151";
+		reg = <0x14>;
+		pinctrl-names = "default";
+		AVDD28-supply = <&v3v3_ao>;
+		VDDIO-supply  = <&v3v3_ao>;
+		interrupt-parent = <&gpioi>;
+		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
+		irq-gpios = <&gpioi 0 0>;
+		reset-gpios = <&gpioh 1 GPIO_ACTIVE_LOW>;
+		touchscreen-max-id = <11>;
+		touchscreen-size-x = <800>;
+		touchscreen-size-y = <480>;
+		touchscreen-max-w = <512>;
+        touchscreen-max-p = <512>;
+		goodix,int-sync = <1>;
+	};
 	/* USER CODE END i2c2 */
 };
 
@@ -1033,6 +1041,17 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c3 */
+	pn532: nfc@24 {
+
+		compatible = "nxp,pn532";
+
+		reg = <0x24>;
+		clock-frequency = <400000>;
+
+		interrupt-parent = <&gpioa>;
+		interrupts = <14 IRQ_TYPE_EDGE_FALLING>;
+
+	};
 	/* USER CODE END i2c3 */
 };
 
@@ -1040,6 +1059,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN iwdg2 */
+	timeout-sec = <32>;
 	/* USER CODE END iwdg2 */
 };
 
@@ -1113,6 +1133,38 @@
 	/* USER CODE END rtc */
 };
 
+&sai1{
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&sai1a_pins_mx>;
+	pinctrl-1 = <&sai1a_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN sai1 */
+	clocks = <&rcc SAI1>, <&rcc PLL4_Q>, <&rcc PLL4_Q>;
+	clock-names = "pclk", "x8k", "x11k";
+	/* USER CODE END sai1 */
+
+	sai1a:audio-controller@4400a004{
+		status = "okay";
+
+		/* USER CODE BEGIN sai1a */
+		#clock-cells = <0>;
+		clock-names = "sai_ck"; /* SAIxA kernel clock confguration.  */
+		pinctrl-0 = <&sai1a_pins_mx>;
+		pinctrl-1 = <&sai1a_sleep_pins_mx>;
+		i2s1_port: port {
+			i2s1_endpoint: endpoint {
+				format = "i2s";
+				mclk-fs = <256>;
+				dai-tdm-slot-num = <2>;
+				dai-tdm-slot-width = <32>;
+		   		remote-endpoint = <&codec_endpoint>;
+			};
+		};
+		/* USER CODE END sai1a */
+	};
+};
+
 &sdmmc1{
 	pinctrl-names = "default", "opendrain", "sleep";
 	pinctrl-0 = <&sdmmc1_pins_mx>;
@@ -1124,7 +1176,7 @@
 	disable-wp;
 	st,neg-edge;
 	bus-width = <4>;
-	vmmc-supply = <&vmmc>;
+	vmmc-supply = <&scmi_vdd_sd>;
 	/* USER CODE END sdmmc1 */
 };
 
@@ -1145,22 +1197,6 @@
 	vqmmc-supply = <&vmmc>;
 	mmc-ddr-3_3v;
 	/* USER CODE END sdmmc2 */
-};
-
-&spi1{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&spi1_pins_mx>;
-	pinctrl-1 = <&spi1_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN spi1 */
-	spidev@0{
-		cs-gpios = <&gpioe 5 0>;
-        compatible = "rohm,dh2228fv";
-        reg = <0>;
-        spi-max-frequency = <8000000>;
-    };
-	/* USER CODE END spi1 */
 };
 
 &spi2{
@@ -1193,22 +1229,6 @@
         spi-max-frequency = <8000000>;
     };
 	/* USER CODE END spi3 */
-};
-
-&spi4{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&spi4_pins_mx>;
-	pinctrl-1 = <&spi4_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN spi4 */
-	spidev@0{
-		cs-gpios = <&gpioa 14 0>;
-        compatible = "rohm,dh2228fv";
-        reg = <0>;
-        spi-max-frequency = <8000000>;
-    };
-	/* USER CODE END spi4 */
 };
 
 &timers1{
@@ -1251,7 +1271,6 @@
 		/* USER CODE END timers4_pwm */
 	};
 };
-
 
 &uart4{
 	pinctrl-names = "default", "sleep";
@@ -1325,6 +1344,9 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbotg_hs */
+	dr_mode = "peripheral";
+	usb-role-switch;
+	role-switch-default-mode = "peripheral"; 
 	phys = <&usbphyc_port1 0>;
 	phy-names = "usb2-phy";
  	u-boot,force-b-session-valid;
