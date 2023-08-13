@@ -1,0 +1,55 @@
+From db96681b23a52e362b343cc205880d76b16ae09c Mon Sep 17 00:00:00 2001
+From: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Date: Wed, 12 Jul 2023 18:02:26 +0200
+Subject: [PATCH] Adding MCLK DPAM widget in pcm5102a codecs driver
+
+Please not that you have to get inspired by cs42l51 codecs driver to complete it
+
+Change-Id: Ie9e53b6756cdbbbfcf13d3d092ad68920fb5af88
+---
+ sound/soc/codecs/pcm5102a.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/pcm5102a.c b/sound/soc/codecs/pcm5102a.c
+index b8cfc250612c..ced20388543a 100644
+--- a/sound/soc/codecs/pcm5102a.c
++++ b/sound/soc/codecs/pcm5102a.c
+@@ -15,7 +15,8 @@
+ static struct snd_soc_dai_driver pcm5102a_dai = {
+ 	.name = "pcm5102a-hifi",
+ 	.playback = {
+-		.channels_min = 2,
++		.stream_name = "Playback",
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE |
+@@ -24,9 +25,25 @@ static struct snd_soc_dai_driver pcm5102a_dai = {
+ 	},
+ };
+ 
++static int mclk_event(struct snd_soc_dapm_widget *w,
++		      struct snd_kcontrol *kcontrol, int event)
++{
++	/* TO COMPLETE (example with cs45l51.c driver) */
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget pcm5102a_dapm_mclk_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++};
++
+ static struct snd_soc_component_driver soc_component_dev_pcm5102a = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
++	.dapm_widgets	= pcm5102a_dapm_mclk_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(pcm5102a_dapm_mclk_widgets),
++	// .dapm_routes		= pcm5102a_routes,
++	// .num_dapm_routes	= ARRAY_SIZE(pcm5102a_routes),
+ 	.endianness		= 1,
+ 	.non_legacy_dai_naming	= 1,
+ };
+-- 
+2.17.1
+

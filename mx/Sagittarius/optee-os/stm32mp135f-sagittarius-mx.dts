@@ -471,26 +471,26 @@
 		CLK_MCO1_DISABLED
 		CLK_MCO2_DISABLED
 		CLK_QSPI_PLL4P
-		CLK_CKPER_DISABLED
-		CLK_ETH1_PLL3Q
-		CLK_ETH2_PLL3Q
-		CLK_SDMMC1_PLL3R
+		CLK_CKPER_HSE
+		CLK_ETH1_PLL4P
+		CLK_ETH2_PLL4P
+		CLK_SDMMC1_PLL4P
 		CLK_SDMMC2_PLL4P
 		CLK_STGEN_HSI
 		CLK_USBPHY_HSE
 		CLK_SPI23_PLL4P
-		CLK_I2C4_PCLK6
+		CLK_I2C4_PLL4R
 		CLK_USBO_PLL4R
-		CLK_ADC1_PLL3Q
-		CLK_I2C12_PCLK1
-		CLK_I2C3_PCLK6
-		CLK_UART1_PCLK6
-		CLK_UART4_PCLK1
-		CLK_UART35_PCLK1
-		CLK_UART6_PCLK2
-		CLK_UART78_PCLK1
-		CLK_FDCAN_PLL3Q
-		CLK_SAI1_PLL4Q
+		CLK_ADC1_CKPER
+		CLK_I2C12_PLL4R
+		CLK_I2C3_PLL4R
+		CLK_UART1_HSE
+		CLK_UART4_HSE
+		CLK_UART35_HSE
+		CLK_UART6_HSE
+		CLK_UART78_HSE
+		CLK_FDCAN_PLL4R
+		CLK_SAI1_PLL3Q
 		CLK_RNG1_CSI
 		CLK_SAES_AXI
 	>;
@@ -518,13 +518,14 @@
 			divmn = < 2 65 >;
 			frac = < 0x1400 >;
 		};
-		pll3_vco_400Mhz: pll3-vco-400Mhz {
+		pll3_vco_417Mhz: pll3-vco-417Mhz {
 			src = < CLK_PLL3_HSE >;
-			divmn = < 2 49 >;
+			divmn = < 1 33 >;
+			frac = < 0x1a04 >;
 		};
-		pll4_vco_560Mhz: pll4-vco-560Mhz {
+		pll4_vco_600Mhz: pll4-vco-600Mhz {
 			src = < CLK_PLL4_HSE >;
-			divmn = < 2 69 >;
+			divmn = < 1 49 >;
 		};
 
 		/* USER CODE BEGIN rcc_st-pll_vco */
@@ -576,8 +577,8 @@
 		st,pll = < &pll3_cfg1 >;
 
 		pll3_cfg1: pll3_cfg1 {
-			st,pll_vco = < &pll3_vco_400Mhz >;
-			st,pll_div_pqr = < 1 7 1 >;
+			st,pll_vco = < &pll3_vco_417Mhz >;
+			st,pll_div_pqr = < 1 16 36 >;
 		};
 		/* USER CODE BEGIN pll3 */
 		/* USER CODE END pll3 */
@@ -590,8 +591,8 @@
 		st,pll = < &pll4_cfg1 >;
 
 		pll4_cfg1: pll4_cfg1 {
-			st,pll_vco = < &pll4_vco_560Mhz >;
-			st,pll_div_pqr = < 3 6 0 >;
+			st,pll_vco = < &pll4_vco_600Mhz >;
+			st,pll_div_pqr = < 11 59 11 >;
 		};
 		/* USER CODE BEGIN pll4 */
 		/* USER CODE END pll4 */
@@ -632,7 +633,7 @@
 		st,ck_mlahbs {
 
 			cfg_1 {
-				hz = < 200000000 >;
+				hz = < 208877929 >;
 				st,clksrc = < CLK_MLAHBS_PLL3 >;
 				st,clkdiv = < DIV(DIV_MLAHB, 0) >;
 				st,pll = < &pll3_cfg1 >;

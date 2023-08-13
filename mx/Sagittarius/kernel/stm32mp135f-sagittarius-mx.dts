@@ -144,26 +144,28 @@
 		};
 	};
 
-    sound {
+	sound {
         compatible = "audio-graph-card";
         label = "STM32MP1-audio-test-card";
 		routing =
-			"Playback" , "MCLK",
-			"Capture" , "MCLK",
-			"MICL" , "Mic Bias";
-		dais = <&i2s1_port>;
+			"Playback" , "MCLK";
+		dais = <&sai1a_port>;
         status = "okay";
     };
 
     codec: pcm5102a-codec {
+	/*codec: max98357a-codec {*/
         compatible = "ti,pcm5102a";
-        #sound-dai-cells = <0>;
-        clocks = <&i2s1>;     /* The codec is a consumer of I2S2 master clock */
+		/*compatible = "maxim,max98357a";*/
+        /*#sound-dai-cells = <0>;*/
+        clocks = <&sai1a>;     /* The codec is a consumer of I2S2 master clock */
         clock-names = "MCLK"; /* Feed MCLK codec clock with I2S2 master clock provider */
 
         codec_port: port {
             codec_endpoint: endpoint {
-                remote-endpoint = <&i2s1_endpoint>;
+                remote-endpoint = <&sai1a_endpoint>;
+				frame-master;    /* Set codec as master of SAI1A for FS clock. */
+				bitclock-master; /* Set codec as master of SAI1A for SCK clock. */
             };
         };
     };
@@ -181,10 +183,16 @@
 		st,no-hs-ftime-ctrl;
 		st,no-lsfs-sc;
 	};
-
+/*
 	onewire {
 		status = "okay";
 		compatible = "w1-gpio";
+		gpios = <&gpioa 14 GPIO_ACTIVE_HIGH>;
+	};*/
+
+	onewire {
+		status = "okay";
+		compatible = "dht11";
 		gpios = <&gpioa 14 GPIO_ACTIVE_HIGH>;
 	};
 
@@ -993,6 +1001,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c1 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
 	/* USER CODE END i2c1 */
 };
 
@@ -1030,6 +1040,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c3 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
 	pn532: nfc@24 {
 
 		compatible = "nxp,pn532";
@@ -1049,6 +1061,8 @@
 
 	/* USER CODE BEGIN iwdg2 */
 	timeout-sec = <32>;
+	/delete-property/dmas;
+	/delete-property/dma-names;
 	/* USER CODE END iwdg2 */
 };
 
@@ -1071,41 +1085,11 @@
 	/* USER CODE END ltdc */
 };
 
-&m_can1{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&fdcan1_pins_mx>;
-	pinctrl-1 = <&fdcan1_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN m_can1 */
-	/* USER CODE END m_can1 */
-};
-
-&m_can2{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&fdcan2_pins_mx>;
-	pinctrl-1 = <&fdcan2_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN m_can2 */
-	/* USER CODE END m_can2 */
-};
-
 &mdma{
 	status = "okay";
 
 	/* USER CODE BEGIN mdma */
 	/* USER CODE END mdma */
-};
-
-&qspi{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&quadspi_pins_mx>;
-	pinctrl-1 = <&quadspi_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN qspi */
-	/* USER CODE END qspi */
 };
 
 &rcc{
@@ -1129,7 +1113,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN sai1 */
-    #clock-cells = <0>;
     clocks = <&rcc SAI1>, <&scmi_clk CK_SCMI_PLL3_Q>, <&scmi_clk CK_SCMI_PLL3_R>;
     clock-names = "pclk", "x8k", "x11k";
     #sound-dai-cells = <1>;
@@ -1138,13 +1121,14 @@
 	sai1a:audio-controller@4400a004{
 		status = "okay";
 		dma-names = "tx";
+		#clock-cells = <0>;
 		clocks = <&rcc SAI1_K>;
 		clock-names = "sai_ck";
-		i2s1_port: port {
-			i2s1_endpoint: endpoint {
+		sai1a_port: port {
+			sai1a_endpoint: endpoint {
 				remote-endpoint = <&codec_endpoint>;
 				format = "i2s";
-				mclk-fs = <256>;
+				// mclk-fs = <256>;
 			};
 		};
 		/* USER CODE END sai1a */
@@ -1183,38 +1167,6 @@
 	vqmmc-supply = <&vmmc>;
 	mmc-ddr-3_3v;
 	/* USER CODE END sdmmc2 */
-};
-
-&spi2{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&spi2_pins_mx>;
-	pinctrl-1 = <&spi2_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN spi2 */
-	spidev@0{
-		cs-gpios = <&gpiob 8 0>;
-        compatible = "rohm,dh2228fv";
-        reg = <0>;
-        spi-max-frequency = <8000000>;
-    };
-	/* USER CODE END spi2 */
-};
-
-&spi3{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&spi3_pins_mx>;
-	pinctrl-1 = <&spi3_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN spi3 */
-	spidev@0{
-		cs-gpios = <&gpiof 15 0>;
-        compatible = "rohm,dh2228fv";
-        reg = <0>;
-        spi-max-frequency = <8000000>;
-    };
-	/* USER CODE END spi3 */
 };
 
 &timers1{
@@ -1262,46 +1214,6 @@
 
 	/* USER CODE BEGIN uart4 */
 	/* USER CODE END uart4 */
-};
-
-&uart5{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&uart5_pins_mx>;
-	pinctrl-1 = <&uart5_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN uart5 */
-	/* USER CODE END uart5 */
-};
-
-&uart7{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&uart7_pins_mx>;
-	pinctrl-1 = <&uart7_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN uart7 */
-	/* USER CODE END uart7 */
-};
-
-&usart1{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&usart1_pins_mx>;
-	pinctrl-1 = <&usart1_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN usart1 */
-	/* USER CODE END usart1 */
-};
-
-&usart6{
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&usart6_pins_mx>;
-	pinctrl-1 = <&usart6_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN usart6 */
-	/* USER CODE END usart6 */
 };
 
 &usbh_ehci{
